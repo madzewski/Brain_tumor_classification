@@ -1,19 +1,17 @@
-import numpy as np
+import numpy as np 
 import joblib
 import pprint
-from sklearn.pipeline import Pipeline
+
 from sklearn import svm
-from sklearn.linear_model import SGDClassifier
-from sklearn.preprocessing import StandardScaler
 from utils.load_data import load_data
-from utils.tools import RGB2GrayTransformer, HogTransformer
 from sklearn.model_selection import GridSearchCV
 
+from utils.building_models import build_hog_svm_model
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)
+    
     param_grid = [
-        {
-            'hogify__orientations': [10],
+        {   'hogify__orientations': [10],
             'hogify__cells_per_block': [(3,3)],
             'hogify__pixels_per_cell': [(8, 8)],
             'classify': [
@@ -22,23 +20,14 @@ if __name__ == '__main__':
         }
     ]
         
-    HOG_pipeline = Pipeline([
-        ('grayify', RGB2GrayTransformer()),
-        ('hogify', HogTransformer(
-            pixels_per_cell=(14, 14), 
-            cells_per_block=(2, 2), 
-            orientations=8, 
-            block_norm='L2-Hys')
-        ),
-        ('scalify', StandardScaler()),
-        ('classify', SGDClassifier(random_state=42, max_iter=1000, tol=1e-3))
-    ])
+    HOG_pipeline = build_hog_svm_model()
 
 
     train_path = './preprocessed_data/train'
     test_path = './preprocessed_data/test'
 
     X_train, y_train = load_data(train_path, start = 0, stop=2000, preprocess = False, disable_tqdm = True)
+
     X_test, y_test = load_data(test_path, start = 0, stop=200, preprocess = False, disable_tqdm = True)
     y_train = np.ravel(y_train)
     y_test = np.ravel(y_test)
