@@ -9,30 +9,19 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from skimage.feature import hog
 
 class RGB2GrayTransformer(BaseEstimator, TransformerMixin):
-    """
-    Convert an array of RGB images to grayscale
-    """
- 
+    #Simple rgb to grayscale transformation
     def __init__(self):
         pass
- 
     def fit(self, X, y=None):
-        """returns itself"""
         return self
- 
     def transform(self, X, y=None):
-        """perform the transformation and return an array"""
         return np.array([skimage.color.rgb2gray(img) for img in X])
      
  
 class HogTransformer(BaseEstimator, TransformerMixin):
-    """
-    Expects an array of 2d arrays (1 channel images)
-    Calculates hog features for each img
-    """
- 
-    def __init__(self, y=None, orientations=9,
-                 pixels_per_cell=(8, 8),
+    #Expects an array of 2d arrays (1 channel images)
+    #Calculates hog features for each img
+    def __init__(self, y=None, orientations=9,pixels_per_cell=(8, 8),
                  cells_per_block=(3, 3), block_norm='L2-Hys'):
         self.y = y
         self.orientations = orientations
@@ -44,19 +33,16 @@ class HogTransformer(BaseEstimator, TransformerMixin):
         return self
  
     def transform(self, X, y=None):
- 
         def local_hog(X):
             return hog(X,
                        orientations=self.orientations,
                        pixels_per_cell=self.pixels_per_cell,
                        cells_per_block=self.cells_per_block,
                        block_norm=self.block_norm)
- 
         try: # parallel
             return np.array([local_hog(img) for img in X])
         except:
             return np.array([local_hog(img) for img in X])
-
 
 
 def crop_brain_contour(image):
@@ -81,6 +67,7 @@ def crop_brain_contour(image):
     # crop new image out of the original image using the four extreme points (left, right, top, bottom)
     new_image = image[extTop[1]:extBot[1], extLeft[0]:extRight[0]]               
     return new_image
+
 
 def preprocess_image(image, image_size = (240, 240)):
     image_width, image_height = image_size
