@@ -1,6 +1,11 @@
 from tensorflow.keras.models import Model,load_model
 from tensorflow.keras.layers import Conv2D,Input,ZeroPadding2D,BatchNormalization,Flatten,Activation,Dense,MaxPooling2D
-
+from utils.tools import RGB2GrayTransformer, HogTransformer
+from sklearn.pipeline import Pipeline
+from sklearn import svm
+from sklearn.linear_model import SGDClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 def build_cnn_model_ver1(input_shape):
     X_input = Input(input_shape) 
@@ -38,4 +43,37 @@ def build_cnn_model_ver2(input_shape):
     X = Dense(1, activation='sigmoid')(X)
 
     model = Model(inputs = X_input, outputs = X)
+    return model
+
+
+def build_svm_model():
+    model = Pipeline([
+        ('scalify', StandardScaler()), 
+        ('classify', svm.SVC(kernel='linear', C=1))
+    ])
+    return model
+
+
+def build_pca_svm_model():
+    model = Pipeline([
+        ('scaling', StandardScaler()),
+        ('reduce_dim', PCA(n_components=0.9)),
+        ('classify', svm.SVC(kernel='linear', C=1))
+    ])
+    return model
+
+
+def build_hog_svm_model():
+    model = Pipeline([
+        ('grayify', RGB2GrayTransformer()),
+        ('hogify', HogTransformer(
+            pixels_per_cell=(14, 14), 
+            cells_per_block=(2, 2), 
+            orientations=8, 
+            block_norm='L2-Hys')
+        ),
+        ('scalify', StandardScaler()),
+        ('classify', svm.SVC(kernel='linear', C=1))
+    ])
+
     return model
