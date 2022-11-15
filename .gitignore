@@ -129,3 +129,9 @@ dmypy.json
 .pyre/
 
 data
+data500
+archive.zip
+archive2.zip
+models
+repo_data
+preprocessed_data
