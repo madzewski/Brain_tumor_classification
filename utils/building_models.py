@@ -20,7 +20,6 @@ def build_cnn_model_ver1(input_shape):
     X = Flatten()(X) 
     X = Dense(1, activation='sigmoid')(X) 
     model = Model(inputs = X_input, outputs = X)
-    
     return model
 
 
@@ -48,6 +47,7 @@ def build_cnn_model_ver2(input_shape):
 
 def build_svm_model():
     model = Pipeline([
+        # ('grayify', RGB2GrayTransformer()),
         ('scalify', StandardScaler()), 
         ('classify', svm.SVC(kernel='linear', C=1))
     ])
@@ -56,6 +56,7 @@ def build_svm_model():
 
 def build_pca_svm_model():
     model = Pipeline([
+        # ('grayify', RGB2GrayTransformer()),
         ('scaling', StandardScaler()),
         ('reduce_dim', PCA(n_components=0.9)),
         ('classify', svm.SVC(kernel='linear', C=1))
@@ -65,7 +66,7 @@ def build_pca_svm_model():
 
 def build_hog_svm_model():
     model = Pipeline([
-        ('grayify', RGB2GrayTransformer()),
+        # ('grayify', RGB2GrayTransformer()),
         ('hogify', HogTransformer(
             pixels_per_cell=(14, 14), 
             cells_per_block=(2, 2), 
@@ -75,5 +76,4 @@ def build_hog_svm_model():
         ('scalify', StandardScaler()),
         ('classify', svm.SVC(kernel='linear', C=1))
     ])
-
     return model

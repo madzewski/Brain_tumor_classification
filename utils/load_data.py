@@ -13,7 +13,7 @@ def load_data(dir_list, image_size = (240, 240), start = 0, stop = 9000, describ
     
     for path in tqdm(sorted(os.listdir(dir_list)), disable=disable_tqdm):
         for filename in tqdm(os.listdir(dir_list +'/'+ path)[start:stop], disable=disable_tqdm):
-            image = cv2.imread(dir_list +'/'+ path +'/'+filename)
+            image = cv2.imread(dir_list +'/'+ path +'/'+filename,0)
             if preprocess:
                 X.append(preprocess_image(image, image_size=image_size))
             else:
@@ -32,6 +32,11 @@ def load_data(dir_list, image_size = (240, 240), start = 0, stop = 9000, describ
         print(f'X shape is: {X.shape}')
         print(f'y shape is: {y.shape}')
     return X, y
+
+def load_single_image(path):
+    image = cv2.imread(path,0)
+    image = preprocess_image(image, greyscale = False, image_size=(240,240))
+    return image
 
 def data_len(dir_list):
     lenght = 0

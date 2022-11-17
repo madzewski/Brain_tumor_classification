@@ -3,6 +3,7 @@ import imutils
 import os
 import numpy as np
 import skimage
+import json
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -45,10 +46,13 @@ class HogTransformer(BaseEstimator, TransformerMixin):
             return np.array([local_hog(img) for img in X])
 
 
-def crop_brain_contour(image):
+def crop_brain_contour(image, grayscale = True):
     # Convert the image to grayscale, and blur it slightly
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gray = cv2.GaussianBlur(gray, (5, 5), 0)
+    if grayscale:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.GaussianBlur(gray, (5, 5), 0)
+    else:
+        gray = cv2.GaussianBlur(image, (5, 5), 0)
     
     thresh = cv2.threshold(gray, 45, 255, cv2.THRESH_BINARY)[1]
     thresh = cv2.erode(thresh, None, iterations=2)
@@ -69,9 +73,9 @@ def crop_brain_contour(image):
     return new_image
 
 
-def preprocess_image(image, image_size = (240, 240)):
+def preprocess_image(image, greyscale = True, image_size = (240, 240)):
     image_width, image_height = image_size
-    image = crop_brain_contour(image)
+    image = crop_brain_contour(image, greyscale)
     image = cv2.resize(image, dsize=(image_width, image_height), interpolation=cv2.INTER_CUBIC)
     return image / 255.
 
@@ -86,6 +90,7 @@ def rename_images(path, name, start = 0):
     files = os.listdir(path)
     for index, file in enumerate(files):
         os.rename(os.path.join(path, file), os.path.join(path, ''.join([name+str(index+start), '.jpg'])))
+
 
 def append_history(history, temp_history):
     history['val_loss'].append(temp_history['loss'])
@@ -112,3 +117,7 @@ def plot_metrics(history):
     plt.title('Accuracy')
     plt.legend()
     plt.show()
+
+def save_model_params(parameters):
+    with open('file.txt', 'w') as file:
+        file.write(json.dumps(parameters))

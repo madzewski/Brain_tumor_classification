@@ -33,8 +33,8 @@ def train_model(train_path, test_path, val_path, e = 10, b = 32, sample_size = 2
 
 
 def train_model_on_batch(train_path, test_path, val_path, e = 10, b = 32):
-    IMG_SHAPE = (IMG_WIDTH, IMG_HEIGHT, 3)
-    # IMG_SHAPE = (IMG_WIDTH, IMG_HEIGHT, 1)
+    # IMG_SHAPE = (IMG_WIDTH, IMG_HEIGHT, 3)
+    IMG_SHAPE = (IMG_WIDTH, IMG_HEIGHT, 1)
     best_acc = 0
     history = {'val_loss' : [], 'val_accuracy': []} 
     training_data_lenght = int(data_len(train_path)/2)
