@@ -1,6 +1,6 @@
 from tensorflow.keras.models import Model,load_model
 from tensorflow.keras.layers import Conv2D,Input,ZeroPadding2D,BatchNormalization,Flatten,Activation,Dense,MaxPooling2D
-from utils.tools import RGB2GrayTransformer, HogTransformer
+from utils.tools import RGB2GrayTransformer, HogTransformer, ShapeTransformer
 from sklearn.pipeline import Pipeline
 from sklearn import svm
 from sklearn.linear_model import SGDClassifier
@@ -45,18 +45,20 @@ def build_cnn_model_ver2(input_shape):
     return model
 
 
-def build_svm_model():
+def build_svm_model(shape):
     model = Pipeline([
         # ('grayify', RGB2GrayTransformer()),
+        ('reshape', ShapeTransformer(shape = shape)),
         ('scalify', StandardScaler()), 
         ('classify', svm.SVC(kernel='linear', C=1))
     ])
     return model
 
 
-def build_pca_svm_model():
+def build_pca_svm_model(shape):
     model = Pipeline([
         # ('grayify', RGB2GrayTransformer()),
+        ('reshape', ShapeTransformer(shape = shape)),
         ('scaling', StandardScaler()),
         ('reduce_dim', PCA(n_components=0.9)),
         ('classify', svm.SVC(kernel='linear', C=1))
@@ -64,9 +66,10 @@ def build_pca_svm_model():
     return model
 
 
-def build_hog_svm_model():
+def build_hog_svm_model(shape):
     model = Pipeline([
         # ('grayify', RGB2GrayTransformer()),
+        ('reshape', ShapeTransformer(shape = shape)),
         ('hogify', HogTransformer(
             pixels_per_cell=(14, 14), 
             cells_per_block=(2, 2), 
@@ -74,6 +77,6 @@ def build_hog_svm_model():
             block_norm='L2-Hys')
         ),
         ('scalify', StandardScaler()),
-        ('classify', svm.SVC(kernel='linear', C=1))
+        ('classify', svm.SVC(kernel='linear', C=1,probability = True))
     ])
     return model

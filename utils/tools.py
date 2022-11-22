@@ -9,6 +9,19 @@ import matplotlib.pyplot as plt
 from sklearn.base import BaseEstimator, TransformerMixin
 from skimage.feature import hog
 
+
+class ShapeTransformer(BaseEstimator, TransformerMixin):
+    #Simple shape transformation
+    def __init__(self, shape):
+        self.shape = shape
+    def fit(self, X, y=None):
+        return self
+    def transform(self, X, y=None):
+        X_ = X.copy()
+        X_ = X_.reshape(X.shape[0],*self.shape)
+        return X_
+
+
 class RGB2GrayTransformer(BaseEstimator, TransformerMixin):
     #Simple rgb to grayscale transformation
     def __init__(self):
@@ -40,10 +53,19 @@ class HogTransformer(BaseEstimator, TransformerMixin):
                        pixels_per_cell=self.pixels_per_cell,
                        cells_per_block=self.cells_per_block,
                        block_norm=self.block_norm)
-        try: # parallel
+        try:
             return np.array([local_hog(img) for img in X])
         except:
             return np.array([local_hog(img) for img in X])
+
+
+def hog_transform(X):
+    def local_hog(X):
+        image = hog(X,orientations=12, pixels_per_cell=(8,8),
+            cells_per_block=(5,5),block_norm='L2-Hys',visualize=True, feature_vector = False)[1]
+        # print(image.shape)
+        return image
+    return np.array([local_hog(x) for x in X])
 
 
 def crop_brain_contour(image, grayscale = True):

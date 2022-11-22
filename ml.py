@@ -20,25 +20,25 @@ def train_grid_search(model, param_grid, model_name ,X_train, y_train):
 
     print(grid_result.best_score_)
     pp.pprint(grid_result.best_params_)
-    
-
     return grid_result
 
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)
+    train_path = './preprocessed_data/train'
+    test_path = './preprocessed_data/test'
     
     param_grid_hog = [
         {   'hogify__orientations': [10],
             'hogify__cells_per_block': [(3,3)],
             'hogify__pixels_per_cell': [(8,8)],
             'classify': [
-                svm.SVC(kernel='linear', C=1)
+                svm.SVC(kernel='linear', C=1,probability = True)
             ]
         }
     ]
     param_grid_pca = [
-        {   'reduce_dim__n_components': [100,250,500,1000],
-        # {   'reduce_dim__n_components': [0.95],
+        # {   'reduce_dim__n_components': [100,250,500,1000],
+        {   'reduce_dim__n_components': [0.95],
             'classify': [
                 svm.SVC(kernel='linear', C=1)
             ]
@@ -46,29 +46,27 @@ if __name__ == '__main__':
     ]
     param_grid_svm = [
         {'classify': [
-                svm.SVC(kernel='linear', C=1),
-                svm.SVC(kernel='rbf', C=1)
+                svm.SVC(kernel='linear', C=1)
             ]
         }
     ]      
-    model_hog = build_hog_svm_model()
-    model_pca = build_pca_svm_model()
-    model_svm = build_svm_model()
 
-    train_path = './preprocessed_data/train'
-    test_path = './preprocessed_data/test'
-
-    X_train, y_train = load_data(train_path, start = 0, stop=2000, preprocess = False, disable_tqdm = True)
+    X_train, y_train = load_data(train_path, start = 0, stop=500, preprocess = False, disable_tqdm = True)
     X_test, y_test = load_data(test_path, start = 0, stop=150, preprocess = False, disable_tqdm = True)
 
     y_train = np.ravel(y_train)
     y_test = np.ravel(y_test)
 
-    # X_train = np.array(X_train).reshape((X_train.shape[0], X_train.shape[1]*X_train.shape[2]))
-    # X_test = np.array(X_test).reshape((X_test.shape[0], X_test.shape[1]*X_test.shape[2]))
+    # HOG model -> shape = (240,240)
+    # PCA model -> shape = (240*240)
+    # SVM model -> shape = (240*240)
 
-    model_name = 'ml_model_hog_gs.pkl'
-    adj_model = train_grid_search(model_hog, param_grid_hog, model_name, X_train, y_train)
+    # model_hog = build_hog_svm_model(shape = (X_train.shape[1],X_train.shape[2]))
+    # model_pca = build_pca_svm_model(shape = (X_train.shape[1]*X_train.shape[2],))
+    model_svm = build_svm_model(shape = (X_train.shape[1]*X_train.shape[2],))
+
+    model_name = 'ml_model_svm_1000.pkl'
+    adj_model = train_grid_search(model_svm, param_grid_svm, model_name, X_train, y_train)
 
     best_pred = adj_model.predict(X_test)
     print('Percentage correct: ', 100*np.sum(best_pred == y_test)/len(y_test))

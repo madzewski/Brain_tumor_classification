@@ -12,7 +12,7 @@ from utils.tools import split_data, plot_metrics
 IMG_WIDTH = 240
 IMG_HEIGHT = 240
 
-test_path = './preprocessed_data/test'
+test_path = './augmented_preprocessed_data/test'
 X_test, y_test = load_data(test_path, preprocess = False)
 
 model = load_model('models/cnn_model_best_v3.h5')

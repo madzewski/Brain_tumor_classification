@@ -6,7 +6,7 @@ from sklearn.utils import shuffle
 from .tools import preprocess_image
 
 
-def load_data(dir_list, image_size = (240, 240), start = 0, stop = 9000, describe = False, preprocess = True, disable_tqdm = False):
+def load_data(dir_list, image_size = (240, 240), start = 0, stop = 10000, describe = False, preprocess = True, disable_tqdm = False):
     # load all images in a directory
     X = []
     y = []

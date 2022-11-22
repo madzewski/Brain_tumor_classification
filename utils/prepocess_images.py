@@ -18,13 +18,23 @@ def preprocess_images(dir_list, save_path, image_size = (240, 240), start = 0, s
 
 
 def augment_images(path, save_path, start = 0, stop = 100):
-    counter = 1250
+    counter = 0
     for file in tqdm(sorted(os.listdir(path))[start:stop]):
         image = cv2.imread(path +'/'+file)
-        image = cv2.flip(image, 1)
         cv2.imwrite(save_path + '/n'+str(counter)+'.jpg', image)
         counter += 1
 
-        
+    for file in tqdm(sorted(os.listdir(save_path))[start:stop]):
+        image = cv2.imread(save_path +'/'+file)
+        image = cv2.flip(image, 1)
+        cv2.imwrite(save_path + '/n'+str(counter)+'.jpg', image)
+        counter += 1
+    
+    for file in tqdm(sorted(os.listdir(save_path))[start:stop*2]):
+        image = cv2.imread(save_path +'/'+file)
+        image = cv2.flip(image, 0)
+        cv2.imwrite(save_path + '/n'+str(counter)+'.jpg', image)
+        counter += 1
+      
 # preprocess_images(dir_list='../data', save_path='../preprocessed_data', stop = 5000)
-augment_images(path='../preprocessed_data/train/no', save_path= '../preprocessed_data/train/no', stop=800)
+augment_images(path='../preprocessed_data/val/yes', save_path= '../augmented_preprocessed_data/val/yes', stop=100)
