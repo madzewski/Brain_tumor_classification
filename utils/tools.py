@@ -121,21 +121,22 @@ def append_history(history, temp_history):
 
 
 def plot_metrics(history):
-    # train_loss = history['loss']
     val_loss = history['val_loss']
-    # train_acc = history['accuracy']
     val_acc = history['val_accuracy']
     # Loss
     plt.figure()
-    # plt.plot(train_loss, label='Training Loss')
+    
     plt.plot(val_loss, label='Validation Loss')
+    plt.savefig('loss.jpg', bbox_inches='tight')
     plt.title('Loss')
     plt.legend()
     plt.show()
+
     # Accuracy
     plt.figure()
-    # plt.plot(train_acc, label='Training Accuracy')
+    
     plt.plot(val_acc, label='Validation Accuracy')
+    plt.savefig('accuracy.jpg', bbox_inches='tight')
     plt.title('Accuracy')
     plt.legend()
     plt.show()

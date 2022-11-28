@@ -1,4 +1,5 @@
 from tqdm import tqdm
+import time
 import os
 import numpy as np
 import cv2
@@ -16,25 +17,43 @@ def preprocess_images(dir_list, save_path, image_size = (240, 240), start = 0, s
             image = cv2.resize(image, dsize=(image_width, image_height), interpolation=cv2.INTER_CUBIC)
             cv2.imwrite(save_path + '/' + path + '/'+filename, image)
 
+def rename_files(path, name):
+    for counter, filename in enumerate(tqdm(sorted(os.listdir(path)))):
+        dst = f"{name}{str(counter)}.jpg"
+        src =f"{path}/{filename}"
+        dst =f"{path}/{dst}"
+        os.rename(src, dst)
+
 
 def augment_images(path, save_path, start = 0, stop = 100):
     counter = 0
     for file in tqdm(sorted(os.listdir(path))[start:stop]):
         image = cv2.imread(path +'/'+file)
-        cv2.imwrite(save_path + '/n'+str(counter)+'.jpg', image)
+        cv2.imwrite(save_path + '/' + file[0:1]+str(counter)+'.jpg', image)
         counter += 1
-
-    for file in tqdm(sorted(os.listdir(save_path))[start:stop]):
-        image = cv2.imread(save_path +'/'+file)
+    time.sleep(1)
+    for file in tqdm(sorted(os.listdir(path))[start:stop]):
+        image = cv2.imread(path +'/'+file)
         image = cv2.flip(image, 1)
-        cv2.imwrite(save_path + '/n'+str(counter)+'.jpg', image)
+        cv2.imwrite(save_path + '/' + file[0:1]+str(counter)+'.jpg', image)
+        counter += 1
+    time.sleep(1)
+    for file in tqdm(sorted(os.listdir(path))[start:stop]):
+        image = cv2.imread(path +'/'+file)
+        image = cv2.flip(image, 0)
+        cv2.imwrite(save_path + '/' + file[0:1] +str(counter)+'.jpg', image)
+        counter += 1
+    time.sleep(1)
+    for file in tqdm(sorted(os.listdir(path))[start:stop]):
+        image = cv2.imread(path +'/'+file)
+        image = cv2.flip(image, 1)
+        image = cv2.flip(image, 0)
+        cv2.imwrite(save_path + '/' + file[0:1] +str(counter)+'.jpg', image)
         counter += 1
     
-    for file in tqdm(sorted(os.listdir(save_path))[start:stop*2]):
-        image = cv2.imread(save_path +'/'+file)
-        image = cv2.flip(image, 0)
-        cv2.imwrite(save_path + '/n'+str(counter)+'.jpg', image)
-        counter += 1
-      
-# preprocess_images(dir_list='../data', save_path='../preprocessed_data', stop = 5000)
-augment_images(path='../preprocessed_data/val/yes', save_path= '../augmented_preprocessed_data/val/yes', stop=100)
+if __name__ == "__main__":
+    path = '../augmented_preprocessed_data/train/yes'
+    save_path = '../augmented_preprocessed_data/train/no'
+    # preprocess_images(dir_list='../data', save_path='../preprocessed_data', stop = 5000)
+    # augment_images(path=path, save_path=save_path,start=0, stop=10000)
+    rename_files(path = path, name = 'y')

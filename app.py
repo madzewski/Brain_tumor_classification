@@ -56,7 +56,6 @@ def load_cnn_weights():
 def load_ml_weights():
     global model
     weight_path = h5_entry.get()
-    print(weight_path)
     model = joblib.load(weight_path)
 
 # open a image file from hard-disk
@@ -88,7 +87,7 @@ def load_image():
 def test_image():
     start_time = time.time()
     result = model.predict(imgs)
-    print(model.predict_proba(imgs))
+    # print(model.predict_proba(imgs))
     if result > 0.5:
         prediction = "tumor"
     else:
