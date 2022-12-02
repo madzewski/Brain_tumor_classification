@@ -1,7 +1,7 @@
 import joblib
 import tensorflow as tf
 from tensorflow.keras.models import load_model
-from sklearn.metrics import accuracy_score, f1_score, roc_auc_score, roc_curve
+from sklearn.metrics import accuracy_score, precision_score, recall_score,  f1_score, roc_auc_score, roc_curve
 from keras.models import load_model
 from utils.load_data import load_data
 
@@ -37,7 +37,7 @@ IMG_HEIGHT = 240
 test_path = './augmented_preprocessed_data/test'
 X_test, y_test = load_data(test_path, preprocess = False)
 
-model_name ='models/ml/hog/ml_model_hog_1000.pkl'
+model_name ='models/ml_model_pca.pkl'
 
 if model_name[-1] == '5':
     model = load_model(model_name)
@@ -48,9 +48,11 @@ else:
     y_prob, y_pred = create_pred_ml(model.predict_proba(X_test))
 
 acc = accuracy_score(y_test, y_pred)
+prec = precision_score(y_test, y_pred)
+rec = recall_score(y_test, y_pred)
 f1 = f1_score(y_test, y_pred)
 roc = roc_auc_score(y_test, y_pred)
-print(f"Accuracy:{acc}  F1-score:{f1}  ROC:{roc}")
+print(f"Accuracy:{acc}  Precision:{prec}  Recall:{rec}  F1-score:{f1}  ROC:{roc}")
 ConfusionMatrixDisplay.from_predictions(y_test, y_pred)
 plt.show()
 

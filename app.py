@@ -100,12 +100,12 @@ def test_image():
 
 """  Top Frame  """
 # ##### H5 #################
-btn_h5_fopen = Button(top_frame, text='Browse Weights',  command =  lambda: open_file(h5_entry.get()), bg="black", fg="white" )
+btn_h5_fopen = Button(top_frame, text='Browse Model',  command =  lambda: open_file(h5_entry.get()), bg="black", fg="white" )
 btn_h5_fopen.grid(row=2, column=1)
 
 model_var = StringVar()
 model_var.set("/")
-h5_entry = Entry(top_frame, textvariable=model_var, width=40)
+h5_entry = Entry(top_frame, textvariable=model_var, width=80)
 h5_entry.grid(row=2, column=2)
 
 
@@ -115,12 +115,12 @@ btn_img_fopen.grid(row=7, column=1)
 
 img_var = StringVar()
 img_var.set("/")
-img_entry = Entry(top_frame, textvariable=img_var, width=40)
+img_entry = Entry(top_frame, textvariable=img_var, width=80)
 img_entry.grid(row=7, column=2)
 
 
 """ middle Frame  """
-ml = Label(middle_frame, font=("Courier", 10),bg="gray", fg="white", text="Browse Image Show Below").grid(row=1, column=1)
+ml = Label(middle_frame, font=("Courier", 10),bg="gray", fg="white", text="Loaded Image Shown Below").grid(row=1, column=1)
 
 ####### Have Image show properly here in grid
 
@@ -132,7 +132,7 @@ btn_test.pack()
 
 
 test_result_var = StringVar()
-test_result_var.set("Your result shown here")
+test_result_var.set("Your result will be shown here")
 test_result_label = Label(bottom_frame,font=("Courier", 20), height=3, textvariable=test_result_var, bg="white", fg="purple").pack()
 
 # Entering the event mainloop
