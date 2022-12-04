@@ -58,7 +58,7 @@ def train_model_on_batch(train_path, test_path, val_path, e = 10, b = 32):
     history = {'val_loss' : [], 'val_accuracy': []} 
     training_data_lenght = int(data_len(train_path)/2)
 
-    model=build_cnn_model_ver1(IMG_SHAPE)
+    model=build_cnn_model_ver3(IMG_SHAPE)
     model.summary()
     model.compile(optimizer=Adam(learning_rate=1e-4), loss='binary_crossentropy', metrics=['accuracy'])
 
@@ -77,14 +77,14 @@ def train_model_on_batch(train_path, test_path, val_path, e = 10, b = 32):
 
         if float(epoch_history['accuracy']) > best_acc:
             print(f'Found better model. Acc: {epoch_history["accuracy"]}. Saving')
-            model.save('models/cnn_model_v2_best_dropout_aug.h5')
+            model.save('models/vgg_best_dropout_aug.h5')
             best_acc = float(epoch_history['accuracy'])
 
-    model.save('models/cnn_model_v2_dropout_aug.h5')
+    model.save('models/vgg_.h5')
     X_test, y_test = load_data(test_path, preprocess = False)
     model.evaluate(X_test, y_test)
     df = pd.DataFrame.from_dict(history)
-    df.to_csv('cnn_model_v2_history.csv',sep =',', index = False)
+    df.to_csv('vgg.csv',sep =',', index = False)
     plot_metrics(history)
 
 
@@ -92,4 +92,4 @@ train_path = './augmented_preprocessed_data/train'
 test_path = './augmented_preprocessed_data/test'
 val_path = './augmented_preprocessed_data/val'
 # train_model_on_batch_with_hog(train_path = train_path, test_path = test_path, val_path = val_path, e= 64, b=16)
-train_model_on_batch(train_path = train_path, test_path = test_path, val_path = val_path, e= 3, b=6)
+train_model_on_batch(train_path = train_path, test_path = test_path, val_path = val_path, e= 20, b=6)

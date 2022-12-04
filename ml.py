@@ -4,6 +4,7 @@ import joblib
 import pprint
 
 from sklearn import svm
+from sklearn.linear_model import SGDClassifier
 from utils.load_data import load_data
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
@@ -12,10 +13,10 @@ from utils.building_models import build_hog_svm_model, build_svm_model, build_pc
 
 
 def train_grid_search(model, param_grid, model_name ,X_train, y_train):
-    grid_search = GridSearchCV(model, param_grid, cv=3, n_jobs=1, scoring='accuracy', 
+    grid_search = GridSearchCV(model, param_grid, cv=3, n_jobs=2, scoring='accuracy', 
                             verbose=4, return_train_score=True)
     grid_result = grid_search.fit(X_train, y_train)
-    joblib.dump(grid_result, 'models/'+model_name)
+    joblib.dump(grid_result.best_estimator_, 'models/'+model_name)
 
     print(grid_result.best_score_)
     pp.pprint(grid_result.best_params_)
@@ -23,8 +24,8 @@ def train_grid_search(model, param_grid, model_name ,X_train, y_train):
 
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)
-    train_path = './preprocessed_data/train'
-    test_path = './preprocessed_data/test'
+    train_path = './augmented_preprocessed_data/train'
+    test_path = './augmented_preprocessed_data/test'
     
     param_grid_hog = [
         {   'hogify__orientations': [10],
@@ -37,17 +38,21 @@ if __name__ == '__main__':
     param_grid_pca = [
         {   'reduce_dim__n_components': [0.95],
             'classify': [
-                svm.SVC(kernel='linear', C=1, probability=True)
+                svm.SVC(kernel='linear', C=1, probability=True),
+                svm.SVC(kernel='rbf', C=1, probability=True),
+                SGDClassifier(max_iter=1000, tol=1e-3)
             ]
         }]
     param_grid_svm = [
         {'classify': [
-                svm.SVC(kernel='linear', C=1, probability=True)
+                svm.SVC(kernel='linear', C=1, probability=True),
+                svm.SVC(kernel='rbf', C=1, probability=True),
+                SGDClassifier(max_iter=1000, tol=1e-3, loss= 'log_loss')
             ]
         }]      
 
-    X_train, y_train = load_data(train_path, stop=2050, preprocess = False, disable_tqdm = True)
-    X_test, y_test = load_data(test_path, preprocess = False, disable_tqdm = True)
+    X_train, y_train = load_data(train_path, stop=800, preprocess = False, disable_tqdm = True)
+    X_test, y_test = load_data(test_path, stop=400, preprocess = False, disable_tqdm = True)
     y_train = np.ravel(y_train)
     y_test = np.ravel(y_test)
 

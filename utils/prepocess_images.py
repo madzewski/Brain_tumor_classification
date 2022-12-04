@@ -14,8 +14,10 @@ def preprocess_images(dir_list, save_path, image_size = (240, 240), start = 0, s
         for filename in tqdm(os.listdir(dir_list +'/'+ path)[start:stop]):
             image = cv2.imread(dir_list +'/'+ path +'/'+filename)
             image = crop_brain_contour(image)
-            image = cv2.resize(image, dsize=(image_width, image_height), interpolation=cv2.INTER_CUBIC)
+            # image = cv2.resize(image, dsize=(image_width, image_height), interpolation=cv2.INTER_CUBIC)
+            print('xD')
             cv2.imwrite(save_path + '/' + path + '/'+filename, image)
+            return
 
 def rename_files(path, name):
     for counter, filename in enumerate(tqdm(sorted(os.listdir(path)))):
@@ -53,7 +55,7 @@ def augment_images(path, save_path, start = 0, stop = 100):
     
 if __name__ == "__main__":
     path = '../augmented_preprocessed_data/train/yes'
-    save_path = '../augmented_preprocessed_data/train/no'
-    # preprocess_images(dir_list='../data', save_path='../preprocessed_data', stop = 5000)
-    # augment_images(path=path, save_path=save_path,start=0, stop=10000)
-    rename_files(path = path, name = 'y')
+    save_path = 'D:\praca_inz'
+    # preprocess_images(dir_list='../data', save_path='D:\praca_inz', stop = 5000)
+    augment_images(path=path, save_path=save_path,start=0, stop=1)
+    # rename_files(path = path, name = 'n')

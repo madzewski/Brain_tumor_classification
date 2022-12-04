@@ -35,9 +35,9 @@ IMG_WIDTH = 240
 IMG_HEIGHT = 240
 
 test_path = './augmented_preprocessed_data/test'
-X_test, y_test = load_data(test_path, preprocess = False)
+X_test, y_test = load_data(test_path, preprocess = False, describe = True)
 
-model_name ='models/ml_model_pca.pkl'
+model_name ='models/ml_model_svm.pkl'
 
 if model_name[-1] == '5':
     model = load_model(model_name)

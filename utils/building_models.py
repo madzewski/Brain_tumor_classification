@@ -54,6 +54,38 @@ def build_cnn_model_ver2(input_shape):
     return model
 
 
+def build_cnn_model_ver3(input_shape):
+    X_input = Input(input_shape)
+    X = Conv2D(16, (3,3), 1, activation="relu", padding="same")(X_input)
+    X = Dropout(0.25)(X)
+    X = MaxPooling2D()(X)
+
+    X = Conv2D(32, (3,3), 1, activation="relu", padding="same")(X)
+    X = Dropout(0.25)(X)
+    X = MaxPooling2D()(X)
+
+    X = Conv2D(64, (5,5), 1, activation="relu", padding="same")(X)
+    X = Dropout(0.25)(X)
+    X = Conv2D(64, (5,5), 1, activation="relu", padding="same")(X)
+    X = Dropout(0.25)(X)
+    X = MaxPooling2D()(X)
+
+    X = Conv2D(128, (3,3), 1, activation="relu", padding="same")(X)
+    X = Dropout(0.25)(X)
+    X = Conv2D(128, (3,3), 1, activation="relu", padding="same")(X)
+    X = Dropout(0.25)(X)
+    X = MaxPooling2D()(X)
+
+    X = Flatten()(X)
+    X = Dense(256, activation='relu')(X)
+    X = Dropout(0.35)(X)
+    X = Dense(128, activation='relu')(X)
+    X = Dropout(0.35)(X)
+    X = Dense(1, activation='sigmoid')(X)
+    X = Dropout(0.35)(X)
+    model = Model(inputs = X_input, outputs = X)
+    return model
+
 def build_svm_model(shape):
     model = Pipeline([
         # ('grayify', RGB2GrayTransformer()),
